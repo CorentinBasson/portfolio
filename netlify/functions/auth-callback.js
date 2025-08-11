@@ -42,32 +42,21 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Script pour envoyer le token au CMS
-    const allowedOrigin = process.env.URL || (event.headers && (event.headers.referer || '').split('/').slice(0,3).join('/')) || '';
+    // Script pour envoyer immédiatement le token au CMS
     const script = `
       <script>
         (function() {
-          var allowedOrigin = ${JSON.stringify(allowedOrigin)};
-          function receiveMessage(e) {
-            try {
-              if (!allowedOrigin || (e.origin !== allowedOrigin)) {
-                return;
-              }
-              e.source.postMessage(
-                'authorization:github:success:${JSON.stringify({
-                  token: tokenData.access_token,
-                  provider: 'github'
-                })}',
-                e.origin
-              );
-            } catch (err) {
-              // ignore
+          try {
+            var payload = 'authorization:github:success:' + ${JSON.stringify(JSON.stringify({
+              token: tokenData.access_token,
+              provider: 'github'
+            }))};
+            if (window.opener) {
+              // Envoyer le token au CMS (Decap) et fermer la fenêtre
+              window.opener.postMessage(payload, '*');
             }
-          }
-          window.addEventListener('message', receiveMessage, false);
-          if (window.opener && allowedOrigin) {
-            window.opener.postMessage('authorizing:github', allowedOrigin);
-          }
+            setTimeout(function(){ window.close(); }, 300);
+          } catch (e) {}
         })();
       </script>
     `;
