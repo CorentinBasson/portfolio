@@ -43,28 +43,31 @@ exports.handler = async (event, context) => {
     }
 
     // Script pour envoyer le token au CMS
+    const allowedOrigin = process.env.URL || (event.headers && (event.headers.referer || '').split('/').slice(0,3).join('/')) || '';
     const script = `
       <script>
         (function() {
+          var allowedOrigin = ${JSON.stringify(allowedOrigin)};
           function receiveMessage(e) {
-            console.log("receiveMessage %o", e);
-            if (e.origin !== "${process.env.URL}") {
-              console.log("Invalid origin: %o", e.origin);
-              return;
+            try {
+              if (!allowedOrigin || (e.origin !== allowedOrigin)) {
+                return;
+              }
+              e.source.postMessage(
+                'authorization:github:success:${JSON.stringify({
+                  token: tokenData.access_token,
+                  provider: 'github'
+                })}',
+                e.origin
+              );
+            } catch (err) {
+              // ignore
             }
-            // Envoyer le token au CMS
-            e.source.postMessage(
-              'authorization:github:success:${JSON.stringify({
-                token: tokenData.access_token,
-                provider: 'github'
-              })}',
-              e.origin
-            );
           }
-          window.addEventListener("message", receiveMessage, false);
-          // Informer que la fenêtre est prête
-          console.log("Posting message to %o", "${process.env.URL}");
-          window.opener && window.opener.postMessage("authorizing:github", "${process.env.URL}");
+          window.addEventListener('message', receiveMessage, false);
+          if (window.opener && allowedOrigin) {
+            window.opener.postMessage('authorizing:github', allowedOrigin);
+          }
         })();
       </script>
     `;

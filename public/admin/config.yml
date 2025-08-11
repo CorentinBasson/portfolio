@@ -1,9 +1,9 @@
 backend:
-  name: git-gateway
-  repo: CorentinBasson/portfolio  # ou ton vrai repo
+  name: github
+  repo: CorentinBasson/portfolio
   branch: main
-  base_url: https://cbsn.netlify.app # URL de votre site
-  auth_endpoint: /.netlify/functions/auth  # Notre fonction d'authentification
+  base_url: https://cbsn.netlify.app/.netlify/functions
+  auth_endpoint: auth
 
 # URL du site pour afficher un lien dans la navbar du CMS
 site_url: https://cbsn.netlify.app
