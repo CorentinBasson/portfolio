@@ -20,8 +20,8 @@ media_library:
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
-# Configuration locale pour le développement
-local_backend: true
+# Configuration locale pour le développement (désactivée pour utiliser GitHub OAuth)
+# local_backend: true
 
 # Collections de contenu
 collections:
@@ -45,8 +45,74 @@ collections:
         file: "content/pages/about.md"
         fields:
           - { label: "Titre", name: "title", widget: "string" }
+          - { label: "Sous-titre professionnel", name: "subtitle", widget: "string", default: "Graphiste Freelance" }
           - { label: "Photo de profil", name: "profile_image", widget: "image" }
           - { label: "Compétences", name: "skills", widget: "list", field: { label: "Compétence", name: "skill", widget: "string" } }
+          - label: "Statistiques"
+            name: "stats"
+            widget: "object"
+            fields:
+              - label: "Années d'expérience"
+                name: "years"
+                widget: "object"
+                fields:
+                  - { label: "Valeur", name: "value", widget: "string", default: "5+" }
+                  - { label: "Label", name: "label", widget: "string", default: "ANNÉES" }
+              - label: "Nombre de projets"
+                name: "projects"
+                widget: "object"
+                fields:
+                  - { label: "Valeur", name: "value", widget: "string", default: "50+" }
+                  - { label: "Label", name: "label", widget: "string", default: "PROJETS" }
+          - label: "Disponibilité"
+            name: "availability"
+            widget: "object"
+            fields:
+              - { label: "Disponible", name: "status", widget: "boolean", default: true }
+              - { label: "Message de statut", name: "message", widget: "string", default: "DISPONIBLE POUR NOUVEAUX PROJETS" }
+          - label: "Boutons d'action de la carte profil"
+            name: "cta_buttons"
+            widget: "object"
+            fields:
+              - label: "Bouton Contact"
+                name: "contact"
+                widget: "object"
+                fields:
+                  - { label: "Texte", name: "text", widget: "string", default: "CONTACT.INIT()" }
+                  - { label: "Email", name: "email", widget: "string" }
+                  - { label: "Icône", name: "icon", widget: "hidden", default: "mail" }
+              - label: "Bouton CV"
+                name: "cv"
+                widget: "object"
+                fields:
+                  - { label: "Texte", name: "text", widget: "string", default: "DOWNLOAD.CV()" }
+                  - { label: "Lien vers le CV", name: "file_url", widget: "file", allow_multiple: false }
+                  - { label: "Icône", name: "icon", widget: "hidden", default: "download" }
+          - label: "Call-to-Action final"
+            name: "final_cta"
+            widget: "object"
+            fields:
+              - { label: "Titre", name: "title", widget: "string", default: "PROJECT.INITIALIZE()" }
+              - { label: "Description ligne 1", name: "description_line1", widget: "string", default: "Ready to create something extraordinary together?" }
+              - { label: "Description ligne 2", name: "description_line2", widget: "string", default: "Initialize collaboration protocol..." }
+              - label: "Boutons"
+                name: "buttons"
+                widget: "object"
+                fields:
+                  - label: "Bouton Projets"
+                    name: "projects"
+                    widget: "object"
+                    fields:
+                      - { label: "Texte", name: "text", widget: "string", default: "VIEW.PROJECTS()" }
+                      - { label: "Lien", name: "link", widget: "string", default: "/projects" }
+                      - { label: "Icône", name: "icon", widget: "hidden", default: "external-link" }
+                  - label: "Bouton Contact"
+                    name: "contact"
+                    widget: "object"
+                    fields:
+                      - { label: "Texte", name: "text", widget: "string", default: "START.PROJECT()" }
+                      - { label: "Email", name: "email", widget: "string" }
+                      - { label: "Icône", name: "icon", widget: "hidden", default: "mail" }
           - { label: "Contenu", name: "body", widget: "markdown" }
 
   # Réalisations/Projets
